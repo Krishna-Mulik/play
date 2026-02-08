@@ -1,3 +1,4 @@
+export const PORT = process.env.PORT || 3000;
 export const DB_NAME = "videotube";
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;

@@ -1,9 +1,7 @@
+import "./config.js";
 import app from "./app.js";
-import { PORT } from "./constants.js";
 import connectDB from "./db/index.js";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { PORT } from "./constants.js";
 
 connectDB();
 

@@ -6,11 +6,18 @@ import {
     ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_EXPIRY,
     REFRESH_TOKEN_SECRET,
-} from "../constants";
+} from "../constants.js";
+import { required, trim } from "zod/mini";
 
 const userSchema = new Schema(
     {
         username: {
+            type: String,
+            required: true,
+            trim: true,
+            index: true,
+        },
+        fullname: {
             type: String,
             required: [true, "name is required"],
             unique: [true, "name already exists"],
@@ -23,12 +30,6 @@ const userSchema = new Schema(
             require: [true, "email is required"],
             lowercase: true,
             trim: true,
-        },
-        fullname: {
-            type: String,
-            required: true,
-            trim: true,
-            index: true,
         },
         avatar: {
             type: String,
@@ -51,7 +52,7 @@ const userSchema = new Schema(
             type: String,
         },
     },
-    { timestamps }
+    { timestamps: true }
 );
 
 userSchema.pre("save", async function (next) {
@@ -65,6 +66,7 @@ userSchema.methods.isPasswordValid = async function (candidatePassword) {
 };
 
 userSchema.methods.generateAccessToken = function () {
+    console.log(ACCESS_TOKEN_SECRET, ACCESS_TOKEN_EXPIRY, "access token check");
     return jwt.sign(
         {
             userId: this.id,
@@ -85,4 +87,5 @@ userSchema.methods.refereshToken = function () {
     });
 };
 
-export default User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;

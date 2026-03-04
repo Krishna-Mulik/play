@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, z } from "zod";
 
 const MAX_UPLOAD_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -19,9 +19,16 @@ const imageSchema = z
     });
 
 export const UserSchema = z.object({
-    fullname: z.string().min(1, "Full name is required"),
+    userName: z.string().min(1, "Full name is required"),
+    fullName: z.string().min(1, "Full name is required"),
     email: z.email(),
-    avatar: z.string(),
-    coverImage: imageSchema.optional(),
+    avatarLocalPath: z.string(),
+    coverImageLocalPath: z.string().optional(),
     password: z.string(),
+});
+
+export const UserLoginSchema = UserSchema.pick({
+    userName: true,
+    email: true,
+    password: true,
 });

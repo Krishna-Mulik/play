@@ -4,7 +4,8 @@ import connectDB from "./db/index.js";
 import { PORT } from "./constants.js";
 
 connectDB();
-
 app.listen(PORT, () => {
-    console.log(`listening at port: ${PORT}`);
+    {
+        console.log(`listening at port: ${PORT}`);
+    }
 });

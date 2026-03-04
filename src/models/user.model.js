@@ -11,13 +11,13 @@ import { required, trim } from "zod/mini";
 
 const userSchema = new Schema(
     {
-        username: {
+        userName: {
             type: String,
             required: true,
             trim: true,
             index: true,
         },
-        fullname: {
+        fullName: {
             type: String,
             required: [true, "name is required"],
             unique: [true, "name already exists"],
@@ -55,8 +55,8 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
 });
@@ -81,10 +81,20 @@ userSchema.methods.generateAccessToken = function () {
     );
 };
 
-userSchema.methods.refereshToken = function () {
+userSchema.methods.generateRefereshToken = function () {
     return jwt.sign({ userId: this._id }, REFRESH_TOKEN_SECRET, {
         expiresIn: REFRESH_TOKEN_EXPIRY,
     });
+};
+
+userSchema.methods.generateAccessAndRefreshTokens = async function () {
+    const accessToken = this.generateAccessToken();
+    const refreshToken = this.generateRefereshToken();
+
+    this.refreshToken = refreshToken;
+    await this.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
 };
 
 const User = mongoose.model("User", userSchema);

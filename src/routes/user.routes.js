@@ -4,6 +4,7 @@ import {
     logout,
     refreshTokens,
     registerUser,
+    updateAvatar,
 } from "../controllers/user.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 import auth from "../middlewares/auth.middleware.js";
@@ -25,5 +26,7 @@ userRouter.post("/login", upload.none(), loginUser);
 userRouter.post("/logout", auth, logout);
 
 userRouter.post("/refreshToken", auth, refreshTokens);
+
+userRouter.post("/updateAvatar", auth, upload.single("avatar"), updateAvatar);
 
 export default userRouter;

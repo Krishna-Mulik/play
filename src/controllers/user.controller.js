@@ -140,3 +140,61 @@ export const refreshTokens = asyncHandler(async (req, res) => {
             ),
         });
 });
+
+export const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const user = User.findById(_id);
+
+    const isPassword = user.isPasswordValid(oldPassword);
+    if (!isPassword) throw new ApiError(400, "Invalid Password");
+
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).json(new ApiResponse(200, {}, "Password Changed"));
+});
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    res.status(200).json(
+        new ApiResponse(200, req.user, "user fetched successfully")
+    );
+});
+
+export const updateAccountDetails = asyncHandler(async (req, res) => {
+    const { fullName, email } = req.body;
+
+    await User.findByIdAndUpdate(req.user._id, {
+        $set: { fullName, email },
+    });
+
+    res.status(200).json(
+        new ApiResponse(200, {}, "user account updated successfully")
+    );
+});
+
+export const updateAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req?.file?.path;
+    if (!avatarLocalPath) throw new ApiError(400, "Invalid Avatar");
+
+    const avatar = await uploadToCloudinary(avatarLocalPath);
+    if (!avatar) {
+        console.error("avatar failed to upload on cloudinary");
+        throw new ApiError(500, "Error Uploading to Avatar");
+    }
+
+    const user = await User.findOneAndUpdate(
+        req.user._id,
+        {
+            $set: { avatar: avatar.url },
+        },
+        { new: true }
+    );
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            { avatar: user?.avatar },
+            "avatar updated successfully"
+        )
+    );
+});

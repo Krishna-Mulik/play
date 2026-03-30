@@ -32,9 +32,10 @@ const videoSchema = new Schema(
         owner: {
             type: Schema.Types.ObjectId,
             ref: "User",
+            required: true,
         },
     },
-    { timestamps }
+    { timestamps: true }
 );
 
-export default Video = mongoose.model("Video", videoSchema);
+export default mongoose.model("Video", videoSchema);

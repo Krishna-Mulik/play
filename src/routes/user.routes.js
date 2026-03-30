@@ -5,6 +5,8 @@ import {
     refreshTokens,
     registerUser,
     updateAvatar,
+    getWatchHistory,
+    addVideoToWatchHistory,
 } from "../controllers/user.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 import auth from "../middlewares/auth.middleware.js";
@@ -23,10 +25,16 @@ userRouter.post(
 
 userRouter.post("/login", upload.none(), loginUser);
 
-userRouter.post("/logout", auth, logout);
+userRouter.use(auth);
 
-userRouter.post("/refreshToken", auth, refreshTokens);
+userRouter.post("/logout", logout);
 
-userRouter.post("/updateAvatar", auth, upload.single("avatar"), updateAvatar);
+userRouter.post("/refreshToken", refreshTokens);
+
+userRouter.post("/updateAvatar", upload.single("avatar"), updateAvatar);
+
+userRouter.get("/watch-history", getWatchHistory);
+
+userRouter.patch("/watch-history/:videoId", addVideoToWatchHistory);
 
 export default userRouter;

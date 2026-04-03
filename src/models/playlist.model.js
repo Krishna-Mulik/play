@@ -7,6 +7,7 @@ const playlistSchema = new Schema(
             type: string,
             required: [true, "playlist name is mandatory"],
             trim: true,
+            unique: [true, "name already exists"],
         },
         discription: {
             type: string,

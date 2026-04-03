@@ -71,3 +71,8 @@ export const createPlaylistSchema = z.object({
     description: z.string().trim().optional(),
     videos: z.string().trim(),
 });
+
+export const toggleLikeSchema = z.object({
+    type: z.enum(["video", "comment", "tweet"]),
+    id: z.string(),
+});
